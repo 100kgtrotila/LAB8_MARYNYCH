@@ -2,7 +2,6 @@
   <div class="max-w-7xl mx-auto p-6">
     <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center">Список продуктів</h1>
 
-    <!-- Пошук -->
     <div class="mb-8 flex justify-center">
       <input
           v-model="search"
@@ -12,7 +11,6 @@
       />
     </div>
 
-    <!-- Таблиця з продуктами -->
     <div v-if="rawProducts.length > 0" class="overflow-x-auto rounded-lg shadow-lg bg-white">
       <table class="min-w-full table-auto">
         <thead>
@@ -42,7 +40,6 @@
       </table>
     </div>
 
-    <!-- Пагінація -->
     <div v-if="sortedRows.length > 0" class="mt-6 flex justify-between items-center">
       <button @click="page = Math.max(page - 1, 1)" class="px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all" :disabled="page === 1">
         Назад
@@ -58,13 +55,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 
-const rawProducts = ref([])  // Список продуктів
-const search = ref('')  // Пошуковий запит
-const page = ref(1)  // Поточна сторінка
-const pageCount = 5  // Кількість елементів на сторінці
-const sort = ref({ column: 'title', direction: 'asc' })  // Стандартне сортування
+const rawProducts = ref([])  
+const search = ref('')
+const page = ref(1)
+const pageCount = 5
+const sort = ref({ column: 'title', direction: 'asc' })
 
-// Завантаження даних
 const { data: productsData, pending, error } = await useFetch('https://dummyjson.com/products')
 
 onMounted(async () => {
@@ -80,7 +76,6 @@ onMounted(async () => {
   }
 })
 
-// Пошук і фільтрація
 const filteredRows = computed(() =>
     rawProducts.value.filter(p =>
         p.title.toLowerCase().includes(search.value.toLowerCase()) ||
@@ -89,7 +84,6 @@ const filteredRows = computed(() =>
     )
 )
 
-// Сортування
 const sortData = (column) => {
   if (sort.value.column === column) {
     sort.value.direction = sort.value.direction === 'asc' ? 'desc' : 'asc'
@@ -110,10 +104,8 @@ const sortedRows = computed(() => {
   })
 })
 
-// Визначення кількості сторінок
 const totalPages = computed(() => Math.ceil(filteredRows.value.length / pageCount))
 
-// Пагінація
 const paginatedRows = computed(() => {
   const start = (page.value - 1) * pageCount
   return sortedRows.value.slice(start, start + pageCount)
@@ -124,7 +116,6 @@ const getFirstImage = (product) => product.images?.[0] || ''
 </script>
 
 <style scoped>
-/* Додаткові стилі для кнопок та таблиці */
 button:disabled {
   background-color: #cccccc;
 }
